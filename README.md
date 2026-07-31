@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](/LICENSE)
 [![Go Reference](https://pkg.go.dev/badge/github.com/pspdev-go/pspsdk-go.svg)](https://pkg.go.dev/github.com/pspdev-go/pspsdk-go)
-[![Go Report Card](https://goreportcard.com/badge/github.com/pspdev-go/pspsdk-go)](https://goreportcard.com/report/github.com/pspdev-go/pspsdk-go)
 [![CI](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml/badge.svg)](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml)
 
 `pspsdk-go` provides Go bindings and ABI adapters for writing PSP homebrew
