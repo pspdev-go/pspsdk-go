@@ -69,8 +69,8 @@ build_dir = "build/pspgo"
 kernel_mode = false
 ```
 
-The TinyGo PSP target is embedded in `pspgo`; applications do not need to
-provide a `psp.json`.
+The PSP target is built into TinyGo and selected by `pspgo`; applications do
+not need to provide a `psp.json`.
 
 Minimal application code can import the bindings directly:
 
