@@ -1,7 +1,6 @@
 # PSPSDK Go
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](/LICENSE)
-[![Release](https://github.com/pspdev-go/pspsdk-go/actions/workflows/release.yaml/badge.svg)](https://github.com/pspdev-go/pspsdk-go/actions/workflows/release.yaml)
 [![Go Reference](https://pkg.go.dev/badge/github.com/pspdev-go/pspsdk-go.svg)](https://pkg.go.dev/github.com/pspdev-go/pspsdk-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/pspdev-go/pspsdk-go)](https://goreportcard.com/report/github.com/pspdev-go/pspsdk-go)
 [![CI](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml/badge.svg)](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml)
