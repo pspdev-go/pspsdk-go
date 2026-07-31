@@ -50,11 +50,10 @@ go mod init example.com/my-psp-app
 go get github.com/pspdev-go/pspsdk-go@latest
 ```
 
-Point `pspgo` at a checkout of this repository so it can use the PSP startup
-code and ABI bridges:
+`pspgo` resolves this module's directory from `go.mod`, including local paths
+configured with a `replace` directive:
 
 ```sh
-export PSPGO_SDK=/path/to/pspsdk-go
 pspgo doctor
 pspgo build .
 ```
@@ -64,7 +63,6 @@ The SDK path can also be stored in `pspgo.toml`:
 ```toml
 title = "My PSP Game"
 output = "my-game"
-sdk_root = "../pspsdk-go"
 build_dir = "build/pspgo"
 kernel_mode = false
 ```
