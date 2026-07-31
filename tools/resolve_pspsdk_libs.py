@@ -111,6 +111,18 @@ def main():
         if symbol in visited_symbols:
             continue
         visited_symbols.add(symbol)
+        marker_prefix = "pspsdk_go_require_"
+        if symbol.startswith(marker_prefix):
+            requested_name = symbol[len(marker_prefix):]
+            requested = lib_dir / f"lib{requested_name}.a"
+            if not requested.exists():
+                raise SystemExit(
+                    f"Required PSPSDK library does not exist: {requested}"
+                )
+            selected.add(requested)
+            if args.verbose:
+                print(f"{symbol} -> {requested.name} (package requirement)")
+            continue
         if symbol.startswith("__") or symbol in TOOLCHAIN_SYMBOLS:
             continue
         candidates = definitions.get(symbol)

@@ -26,12 +26,14 @@ cd ../
 python3 tools/resolve_pspsdk_libs.py \
   --output build/pspsdk-libraries.cmake \
   --require Kprintf \
+  --require fdprintf \
   --require pspDebugScreenKprintf \
   build/goexports.o
 
 # Configure and build using the PSP CMake wrapper.
 cd build
-psp-cmake ..
+psp_kernel_mode="${PSP_KERNEL_MODE:-OFF}"
+psp-cmake -DPSP_KERNEL_MODE="$psp_kernel_mode" ..
 make
 cd ..
 

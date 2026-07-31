@@ -52,17 +52,19 @@ Handler installation functions accept an
 `unsafe.Pointer` to a C-ABI callback; an ordinary Go function is not such a
 pointer.
 
-### Generated user-mode bindings
+### Generated bindings
 
-Every user-mode `psp*.h` header in the installed PSPSDK has a corresponding
-package below `psp/`. The `psp` prefix is removed from package names; for
-example:
+Every user-mode and kernel/driver `psp*.h` header in the installed PSPSDK has
+a corresponding package below `psp/`. The `psp` prefix is removed from package
+names; for example:
 
 | Header | Go package |
 | --- | --- |
 | `pspaudio.h` | `psp/audio` |
 | `pspnet_adhoc.h` | `psp/net_adhoc` |
 | `psputility_savedata.h` | `psp/utility_savedata` |
+| `pspctrl_kernel.h` | `psp/ctrl_kernel` |
+| `pspnand_driver.h` | `psp/nand_driver` |
 
 The generated bindings expose C functions with an exported first letter and
 retain the rest of the PSPSDK name. For example,
@@ -80,3 +82,15 @@ gofmt -w psp/*/bindings_gen.go
 
 See [bindings-report.md](bindings-report.md) for the package generated for
 each header, declaration counts, and unsupported variadic functions.
+
+Kernel and driver packages add a library-requirement marker so automatic
+resolution selects the kernel/driver archive even when a user-mode archive
+exports an identically named symbol. Importing these packages does not grant
+kernel privileges. Build a kernel-mode module when the API requires it:
+
+```sh
+PSP_KERNEL_MODE=ON ./build-sample.sh
+```
+
+Kernel/driver APIs can modify firmware state or raw devices and must only be
+used with hardware- and firmware-appropriate arguments.

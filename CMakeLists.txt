@@ -4,6 +4,8 @@ include("$ENV{PSPDEV}/psp/share/pspdev.cmake")
 
 project(tinygo_psp_sample C)
 
+option(PSP_KERNEL_MODE "Build the PSP module with kernel attributes" OFF)
+
 set(TARGET_NAME sample)
 
 set(GO_OBJECT "${CMAKE_SOURCE_DIR}/build/goexports.o")
@@ -19,6 +21,7 @@ include("${PSPSDK_LIBRARIES_FILE}")
 
 set(BRIDGE_SOURCES
     ${CMAKE_SOURCE_DIR}/bridge/main.c
+    ${CMAKE_SOURCE_DIR}/bridge/library_markers.c
     ${CMAKE_SOURCE_DIR}/bridge/printf.c
 )
 
@@ -35,6 +38,10 @@ set_source_files_properties(${GO_OBJECT} PROPERTIES
 target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_SOURCE_DIR}
 )
+
+if(PSP_KERNEL_MODE)
+    target_compile_definitions(${TARGET_NAME} PRIVATE PSPSDK_GO_KERNEL_MODE=1)
+endif()
 
 target_link_libraries(${TARGET_NAME}
     -Wl,--start-group

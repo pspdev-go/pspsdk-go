@@ -14,6 +14,21 @@ INCLUDE = PSPDEV / "psp/sdk/include"
 OUT = ROOT / "psp"
 SKIP_WORDS = ("_kernel", "forkernel", "driver")
 HANDWRITTEN = {"pspctrl.h", "pspdebug.h", "pspdisplay.h", "pspkernel.h"}
+KERNEL_LIBRARIES = {
+    "pspaudio_kernel.h": "pspaudio_driver",
+    "pspctrl_kernel.h": "pspctrl_driver",
+    "pspdisplay_kernel.h": "pspdisplay_driver",
+    "pspimpose_driver.h": "pspkernel",
+    "pspintrman_kernel.h": "pspkernel",
+    "pspiofilemgr_kernel.h": "pspkernel",
+    "psploadexec_kernel.h": "pspkernel",
+    "pspmodulemgr_kernel.h": "pspkernel",
+    "pspnand_driver.h": "pspnand_driver",
+    "pspstdio_kernel.h": "pspkernel",
+    "pspsysmem_kernel.h": "pspkernel",
+    "pspthreadman_kernel.h": "pspkernel",
+    "psputilsforkernel.h": "pspkernel",
+}
 
 
 def package_name(header: str) -> str:
@@ -29,7 +44,6 @@ def package_name(header: str) -> str:
 def target_headers():
     return [
         p for p in sorted(INCLUDE.glob("psp*.h"))
-        if not any(word in p.name for word in SKIP_WORDS)
     ]
 
 
@@ -170,6 +184,19 @@ def generate(header: Path):
         "",
         "var _ unsafe.Pointer",
     ]
+    required_library = KERNEL_LIBRARIES.get(header.name)
+    if required_library:
+        marker = "pspsdk_go_require_" + required_library
+        local_marker = "require" + "".join(
+            part.capitalize() for part in required_library.split("_")
+        )
+        lines += [
+            "",
+            f"func init() {{ {local_marker}() }}",
+            "",
+            f"//go:linkname {local_marker} {marker}",
+            f"func {local_marker}()",
+        ]
     if enums:
         lines += ["", "const ("]
         for name, value in enums:
