@@ -2,6 +2,22 @@
 
 | Header | Package | Functions | Enum constants | Notes |
 | --- | --- | ---: | ---: | --- |
+| `as_reg_compat.h` | `as_reg_compat` | 0 | 0 |  |
+| `bootloadex.h` | `bootloadex` | 22 | 49 |  |
+| `bootloadex_ark.h` | `bootloadex_ark` | 3 | 56 |  |
+| `cfwmacros.h` | `cfwmacros` | 0 | 0 |  |
+| `ciso.h` | `ciso` | 3 | 5 |  |
+| `colordebugger.h` | `colordebugger` | 4 | 0 |  |
+| `dcman.h` | `dcman` | 27 | 0 |  |
+| `idsregeneration.h` | `idsregeneration` | 19 | 0 |  |
+| `infernoctrl.h` | `infernoctrl` | 5 | 3 |  |
+| `isoctrl.h` | `isoctrl` | 3 | 0 |  |
+| `kbooti_update.h` | `kbooti_update` | 3 | 0 |  |
+| `kubridge.h` | `kubridge` | 18 | 358 |  |
+| `libpsardumper.h` | `libpsardumper` | 3 | 0 |  |
+| `libpspexploit.h` | `libpspexploit` | 22 | 387 |  |
+| `mini2d.h` | `mini2d` | 27 | 0 |  |
+| `netdb.h` | `netdb` | 2 | 0 |  |
 | `pspamctrl.h` | `amctrl` | 9 | 9 |  |
 | `pspatrac3.h` | `atrac3` | 23 | 0 |  |
 | `pspaudio.h` | `audio` | 26 | 2 |  |
@@ -116,3 +132,13 @@
 | `pspvfpu.h` | `vfpu` | 3 | 0 |  |
 | `pspvideocodec.h` | `videocodec` | 5 | 0 |  |
 | `pspwlan.h` | `wlan` | 5 | 0 |  |
+| `rebootexconfig.h` | `rebootexconfig` | 0 | 49 |  |
+| `screenprinter.h` | `screenprinter` | 6 | 0 |  |
+| `systemctrl.h` | `systemctrl` | 66 | 427 |  |
+| `systemctrl_adrenaline.h` | `systemctrl_adrenaline` | 5 | 17 |  |
+| `systemctrl_ark.h` | `systemctrl_ark` | 2 | 56 |  |
+| `systemctrl_private.h` | `systemctrl_private` | 10 | 68 | printk: variadic; printkCached: variadic |
+| `systemctrl_se.h` | `systemctrl_se` | 22 | 20 |  |
+| `vitapops.h` | `vitapops` | 0 | 11 |  |
+| `vlf.h` | `vlf` | 123 | 16 | vlfGuiAddTextF: variadic; vlfGuiSetTextF: variadic |
+| `vshctrl.h` | `vshctrl` | 18 | 99 |  |

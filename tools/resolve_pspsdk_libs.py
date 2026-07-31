@@ -123,6 +123,9 @@ def main():
             if args.verbose:
                 print(f"{symbol} -> {requested.name} (package requirement)")
             continue
+        if symbol.startswith("pspsdk_go_"):
+            # Project-local bridge or helper symbol, resolved by a CMake target.
+            continue
         if symbol.startswith("__") or symbol in TOOLCHAIN_SYMBOLS:
             continue
         candidates = definitions.get(symbol)

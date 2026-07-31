@@ -30,6 +30,10 @@ add_executable(${TARGET_NAME}
     ${GO_OBJECT}
 )
 
+add_library(pspsdk_go_vlf_printf STATIC
+    ${CMAKE_SOURCE_DIR}/bridge/vlf_printf.c
+)
+
 set_source_files_properties(${GO_OBJECT} PROPERTIES
     EXTERNAL_OBJECT TRUE
     GENERATED TRUE
@@ -46,6 +50,7 @@ endif()
 target_link_libraries(${TARGET_NAME}
     -Wl,--start-group
     ${PSPSDK_GO_LIBRARIES}
+    pspsdk_go_vlf_printf
     c
     -Wl,--end-group
 )

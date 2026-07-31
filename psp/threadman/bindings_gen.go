@@ -367,7 +367,7 @@ func _sceKernelReturnFromCallback()
 func SceKernelUSec2SysClock(usec uint32, clock unsafe.Pointer) int32
 
 //go:linkname SceKernelUSec2SysClockWide sceKernelUSec2SysClockWide
-func SceKernelUSec2SysClockWide(usec uint32) uint64
+func SceKernelUSec2SysClockWide(usec uint32) int64
 
 //go:linkname SceKernelSysClock2USec sceKernelSysClock2USec
 func SceKernelSysClock2USec(clock unsafe.Pointer, low unsafe.Pointer, high unsafe.Pointer) int32
@@ -379,7 +379,7 @@ func SceKernelSysClock2USecWide(clock int64, low unsafe.Pointer, high unsafe.Poi
 func SceKernelGetSystemTime(time unsafe.Pointer) int32
 
 //go:linkname SceKernelGetSystemTimeWide sceKernelGetSystemTimeWide
-func SceKernelGetSystemTimeWide() uint64
+func SceKernelGetSystemTimeWide() int64
 
 //go:linkname SceKernelGetSystemTimeLow sceKernelGetSystemTimeLow
 func SceKernelGetSystemTimeLow() uint32
@@ -394,19 +394,19 @@ func SceKernelDeleteVTimer(uid int32) int32
 func SceKernelGetVTimerBase(uid int32, base unsafe.Pointer) int32
 
 //go:linkname SceKernelGetVTimerBaseWide sceKernelGetVTimerBaseWide
-func SceKernelGetVTimerBaseWide(uid int32) uint64
+func SceKernelGetVTimerBaseWide(uid int32) int64
 
 //go:linkname SceKernelGetVTimerTime sceKernelGetVTimerTime
 func SceKernelGetVTimerTime(uid int32, time unsafe.Pointer) int32
 
 //go:linkname SceKernelGetVTimerTimeWide sceKernelGetVTimerTimeWide
-func SceKernelGetVTimerTimeWide(uid int32) uint64
+func SceKernelGetVTimerTimeWide(uid int32) int64
 
 //go:linkname SceKernelSetVTimerTime sceKernelSetVTimerTime
 func SceKernelSetVTimerTime(uid int32, time unsafe.Pointer) int32
 
 //go:linkname SceKernelSetVTimerTimeWide sceKernelSetVTimerTimeWide
-func SceKernelSetVTimerTimeWide(uid int32, time int64) uint64
+func SceKernelSetVTimerTimeWide(uid int32, time int64) int64
 
 //go:linkname SceKernelStartVTimer sceKernelStartVTimer
 func SceKernelStartVTimer(uid int32) int32

@@ -54,9 +54,10 @@ pointer.
 
 ### Generated bindings
 
-Every user-mode and kernel/driver `psp*.h` header in the installed PSPSDK has
-a corresponding package below `psp/`. The `psp` prefix is removed from package
-names; for example:
+All 140 top-level headers in the installed PSPSDK have a corresponding package
+below `psp/`. This includes user-mode and kernel/driver `psp*.h` headers as
+well as ARK, CFW, Vita POPS, VLF, and helper-library headers. The `psp` prefix
+is removed from package names; for example:
 
 | Header | Go package |
 | --- | --- |
@@ -65,6 +66,9 @@ names; for example:
 | `psputility_savedata.h` | `psp/utility_savedata` |
 | `pspctrl_kernel.h` | `psp/ctrl_kernel` |
 | `pspnand_driver.h` | `psp/nand_driver` |
+| `systemctrl_ark.h` | `psp/systemctrl_ark` |
+| `vitapops.h` | `psp/vitapops` |
+| `vlf.h` | `psp/vlf` |
 
 The generated bindings expose C functions with an exported first letter and
 retain the rest of the PSPSDK name. For example,
@@ -94,3 +98,14 @@ PSP_KERNEL_MODE=ON ./build-sample.sh
 
 Kernel/driver APIs can modify firmware state or raw devices and must only be
 used with hardware- and firmware-appropriate arguments.
+
+ARK, CFW, Adrenaline, Vita POPS, and VLF packages require the corresponding
+runtime environment and modules; successful static linking does not make
+those APIs available on unsupported firmware. Some combinations of custom
+firmware archives cause `psp-fixup-imports` to warn about import-stub order.
+Treat that warning as a deployment compatibility issue and test the resulting
+binary on the exact target firmware.
+
+The variadic VLF text functions are available as `vlf.AddText` and
+`vlf.SetText`, using the same lightweight Go formatter as
+`debugscreen.Printf`.

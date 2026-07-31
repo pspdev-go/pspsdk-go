@@ -28,6 +28,27 @@ KERNEL_LIBRARIES = {
     "pspsysmem_kernel.h": "pspkernel",
     "pspthreadman_kernel.h": "pspkernel",
     "psputilsforkernel.h": "pspkernel",
+    "bootloadex.h": "bootloadex",
+    "bootloadex_ark.h": "bootloadex",
+    "ciso.h": "cisoread",
+    "colordebugger.h": "colordebugger",
+    "dcman.h": "pspdcman",
+    "idsregeneration.h": "idsregeneration",
+    "infernoctrl.h": "pspinferno_driver",
+    "isoctrl.h": "pspisoctrl_driver",
+    "kbooti_update.h": "pspkbootiupdate",
+    "kubridge.h": "pspkubridge",
+    "libpsardumper.h": "psppsar",
+    "libpspexploit.h": "pspexploit",
+    "mini2d.h": "mini2d",
+    "netdb.h": "cglue",
+    "screenprinter.h": "screenprinter",
+    "systemctrl.h": "pspsystemctrl_kernel",
+    "systemctrl_adrenaline.h": "adrenalinectrl",
+    "systemctrl_ark.h": "pspsystemctrl_user",
+    "systemctrl_se.h": "pspsystemctrl_kernel",
+    "vlf.h": "vlfgui",
+    "vshctrl.h": "pspvshctrl",
 }
 
 
@@ -42,9 +63,7 @@ def package_name(header: str) -> str:
 
 
 def target_headers():
-    return [
-        p for p in sorted(INCLUDE.glob("psp*.h"))
-    ]
+    return sorted(INCLUDE.glob("*.h"))
 
 
 def source_function_names(text: str):
@@ -110,9 +129,10 @@ def go_type(type_info, is_return=False):
     if ctype in SCALARS:
         return SCALARS[ctype]
     # PSPSDK scalar typedefs are 32-bit unless their desugared type says otherwise.
-    if re.search(r"(u64|uint64|SceInt64)", ctype):
+    lowered = ctype.lower()
+    if re.search(r"(u64|uint64|uint64_t|sceuint64)", lowered):
         return "uint64"
-    if re.search(r"(s64|int64|SceOff)", ctype):
+    if re.search(r"(s64|int64|int64_t|sceint64|sceoff)", lowered):
         return "int64"
     if is_return and ctype == "void":
         return ""
