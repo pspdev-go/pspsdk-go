@@ -21,7 +21,6 @@ PSPSDK library resolution, PSP linking, and `EBOOT.PBP` packaging performed by
 - [Go](https://go.dev/)
 - [pspgo](https://github.com/pspdev-go/pspgo)
 - [TinyGo with PSP support](https://github.com/pspdev-go/tinygo)
-- [PSPSDK](https://github.com/pspdev/pspdev)
 - CMake
 
 `pspgo` uses `cmake --build`; it does not invoke Make directly. CMake can use
@@ -39,38 +38,9 @@ Install `pspgo` by following its
 be built from source, installed with `go install`, or downloaded from the
 GitHub Releases page.
 
-## Build the example
+## Example projects
 
-Clone this repository, then run `pspgo` from its root:
-
-```sh
-git clone https://github.com/pspdev-go/pspsdk-go.git
-cd pspsdk-go
-
-pspgo doctor
-pspgo build ./example
-```
-
-The packaged application is written to:
-
-```text
-build/pspgo/cmake/EBOOT.PBP
-```
-
-`pspgo doctor` reports the selected Go and TinyGo versions and verifies the
-PSPSDK build tools. Add `-v` to print every external command:
-
-```sh
-pspgo build -v ./example
-```
-
-To build and open the result in PPSSPP, configure `PSPGO_PPSSPP` and use
-`run`:
-
-```sh
-export PSPGO_PPSSPP=/path/to/PPSSPPSDL
-pspgo run ./example
-```
+You can reference the [pspsdk-example](https://github.com/pspdev-go/pspsdk-example) repository.
 
 ## Use in your own project
 
