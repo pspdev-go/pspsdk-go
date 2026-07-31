@@ -15,6 +15,14 @@ Write PSP Homebrew in Golang!
 ./build-sample.sh
 ```
 
+The build resolves PSPSDK libraries automatically. After TinyGo creates
+`goexports.o`, `tools/resolve_pspsdk_libs.py` reads its undefined symbols,
+finds the defining archives under `$PSPDEV/psp/sdk/lib`, follows archive-member
+dependencies, and writes `build/pspsdk-libraries.cmake`. CMake links only that
+generated library set inside a linker group, so using a new binding such as
+`audio.SceAudioChReserve` does not require manually editing
+`target_link_libraries`.
+
 ## PSPSDK header mappings
 
 The packages call PSPSDK symbols directly. The only remaining C bridge is
@@ -35,7 +43,12 @@ porting C code.
 The variadic C functions `pspDebugScreenPrintf` and
 `pspDebugScreenKprintf` cannot be called directly using the Go ABI. Use
 `debugscreen.PutString`, `debugscreen.PrintData`, `debugscreen.PutInt`, or
-`debugscreen.PutHex32` instead. Handler installation functions accept an
+`debugscreen.PutHex32` instead. `debugscreen.Printf` provides a lightweight
+Go implementation of `%%`, `%s`, `%d`, `%i`, `%u`, `%x`, `%X`, `%o`, `%b`,
+`%c`, `%t`, and `%p`, including field width, left alignment, and zero padding.
+`debugscreen.Kprintf` and `kdebug.Kprintf` provide the same formatting support
+for their corresponding kernel debug outputs.
+Handler installation functions accept an
 `unsafe.Pointer` to a C-ABI callback; an ordinary Go function is not such a
 pointer.
 

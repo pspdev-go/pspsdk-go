@@ -7,9 +7,19 @@ project(tinygo_psp_sample C)
 set(TARGET_NAME sample)
 
 set(GO_OBJECT "${CMAKE_SOURCE_DIR}/build/goexports.o")
+set(PSPSDK_LIBRARIES_FILE "${CMAKE_SOURCE_DIR}/build/pspsdk-libraries.cmake")
+
+if(NOT EXISTS "${PSPSDK_LIBRARIES_FILE}")
+    message(FATAL_ERROR
+        "Missing ${PSPSDK_LIBRARIES_FILE}; run build-sample.sh so the "
+        "PSPSDK libraries can be resolved from goexports.o")
+endif()
+
+include("${PSPSDK_LIBRARIES_FILE}")
 
 set(BRIDGE_SOURCES
     ${CMAKE_SOURCE_DIR}/bridge/main.c
+    ${CMAKE_SOURCE_DIR}/bridge/printf.c
 )
 
 add_executable(${TARGET_NAME}
@@ -27,11 +37,10 @@ target_include_directories(${TARGET_NAME} PRIVATE
 )
 
 target_link_libraries(${TARGET_NAME}
-    pspdebug
-    pspdisplay
-    pspctrl
-    pspge
+    -Wl,--start-group
+    ${PSPSDK_GO_LIBRARIES}
     c
+    -Wl,--end-group
 )
 
 create_pbp_file(

@@ -21,6 +21,14 @@ GOMIPS=softfloat tinygo build \
   .
 cd ../
 
+# Resolve the external symbols that survived TinyGo dead-code elimination to
+# the PSPSDK archives that define them. Kprintf is required by bridge/printf.c.
+python3 tools/resolve_pspsdk_libs.py \
+  --output build/pspsdk-libraries.cmake \
+  --require Kprintf \
+  --require pspDebugScreenKprintf \
+  build/goexports.o
+
 # Configure and build using the PSP CMake wrapper.
 cd build
 psp-cmake ..

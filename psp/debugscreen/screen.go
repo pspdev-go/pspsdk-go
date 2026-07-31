@@ -4,6 +4,7 @@ package debugscreen
 import (
 	"unsafe"
 
+	pspformat "github.com/pspdev-go/pspsdk-go/psp/internal/format"
 	pspstr "github.com/pspdev-go/pspsdk-go/psp/utils/str"
 )
 
@@ -120,6 +121,20 @@ func PutString(s string) int32 {
 	return pspDebugScreenPuts(&data[0])
 }
 
+// Printf formats a Go argument list and writes it to the debug screen.
+// It supports %% %s %d %i %u %x %X %o %b %c %t and %p, plus field width,
+// left alignment, and zero padding.
+func Printf(format string, args ...any) int32 {
+	return PrintData([]byte(pspformat.Sprintf(format, args...)))
+}
+
+// Kprintf formats a Go argument list and writes it using the kernel-mode
+// debug-screen printf implementation.
+func Kprintf(format string, args ...any) {
+	data := append([]byte(pspformat.Sprintf(format, args...)), 0)
+	pspDebugScreenKPuts(&data[0])
+}
+
 func PutHex32(value uint32) int32 {
 	const digits = "0123456789ABCDEF"
 	var data [8]byte
@@ -209,7 +224,10 @@ func ScreenshotSave(filename string) int32 {
 }
 
 // pspDebugScreenPrintf and pspDebugScreenKprintf are deliberately not bound:
-// Go cannot directly call C variadic functions. Use PutString or PrintData.
+// Go cannot directly call C variadic functions. Use Printf or Kprintf.
+
+//go:linkname pspDebugScreenKPuts psp_debugscreen_kputs
+func pspDebugScreenKPuts(data *byte)
 
 //go:linkname pspDebugScreenInit pspDebugScreenInit
 func pspDebugScreenInit()

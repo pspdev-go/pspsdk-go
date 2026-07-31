@@ -18,12 +18,10 @@ func main() {
 	for {
 		display.WaitVblankStart()
 		debugscreen.SetXY(0, 0)
-		debugscreen.PutString("TinyGo PSP future app layer\n")
-		debugscreen.PutString("Press START to exit\n")
-		debugscreen.PutString("\n")
-		debugscreen.PutString("Count: ")
-		debugscreen.PutInt(count)
-		debugscreen.PutString("\n")
+		debugscreen.Printf(
+			"TinyGo PSP future app layer\nPress START to exit\n\nCount: %d\n",
+			count,
+		)
 
 		ctrl.ReadBufferPositive(&pad, 1)
 		if pad.Buttons&ctrl.PSP_CTRL_START != 0 {
