@@ -1,27 +1,125 @@
 # PSPSDK Go
 
-Write PSP Homebrew in Golang!
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen?style=flat-square)](/LICENSE)
+[![Release](https://github.com/pspdev-go/pspsdk-go/actions/workflows/release.yaml/badge.svg)](https://github.com/pspdev-go/pspsdk-go/actions/workflows/release.yaml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/pspdev-go/pspsdk-go.svg)](https://pkg.go.dev/github.com/pspdev-go/pspsdk-go)
+[![Go Report Card](https://goreportcard.com/badge/github.com/pspdev-go/pspsdk-go)](https://goreportcard.com/report/github.com/pspdev-go/pspsdk-go)
+[![CI](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml/badge.svg)](https://github.com/pspdev-go/pspsdk-go/actions/workflows/ci.yaml)
+
+`pspsdk-go` provides Go bindings and ABI adapters for writing PSP homebrew
+with PSPSDK. Applications import packages below
+`github.com/pspdev-go/pspsdk-go/psp` and are compiled with
+[`pspgo`](https://github.com/pspdev-go/pspgo).
+
+Use `pspgo` to build `pspsdk-go` applications. A regular `go build` produces a
+host executable, while invoking TinyGo directly skips the bridge selection,
+PSPSDK library resolution, PSP linking, and `EBOOT.PBP` packaging performed by
+`pspgo`.
 
 ## Requirements
 
-- [Golang](https://golang.org/dl/)
-- [CMake](https://cmake.org/download/)
-- [PSPSDK](https://github.com/pspdev/pspsdk)
-- [Forked TinyGo](https://github.com/pspdev-go/tinygo)
+- [Go](https://go.dev/)
+- [pspgo](https://github.com/pspdev-go/pspgo)
+- [TinyGo with PSP support](https://github.com/pspdev-go/tinygo)
+- [PSPSDK](https://github.com/pspdev/pspdev)
+- CMake and Make
 
-## Building sample
+Set `PSPDEV` to the PSPSDK installation and make its tools available:
 
 ```sh
-./build-sample.sh
+export PSPDEV="$HOME/pspdev"
+export PATH="$PSPDEV/bin:$PATH"
 ```
 
-The build resolves PSPSDK libraries automatically. After TinyGo creates
-`goexports.o`, `tools/resolve_pspsdk_libs.py` reads its undefined symbols,
-finds the defining archives under `$PSPDEV/psp/sdk/lib`, follows archive-member
-dependencies, and writes `build/pspsdk-libraries.cmake`. CMake links only that
-generated library set inside a linker group, so using a new binding such as
-`audio.SceAudioChReserve` does not require manually editing
-`target_link_libraries`.
+Install `pspgo` by following its
+[installation guide](https://github.com/pspdev-go/pspgo#installation). It can
+be built from source, installed with `go install`, or downloaded from the
+GitHub Releases page.
+
+## Build the example
+
+Clone this repository, then run `pspgo` from its root:
+
+```sh
+git clone https://github.com/pspdev-go/pspsdk-go.git
+cd pspsdk-go
+
+pspgo doctor
+pspgo build ./example
+```
+
+The packaged application is written to:
+
+```text
+build/pspgo/cmake/EBOOT.PBP
+```
+
+`pspgo doctor` reports the selected Go and TinyGo versions and verifies the
+PSPSDK build tools. Add `-v` to print every external command:
+
+```sh
+pspgo build -v ./example
+```
+
+To build and open the result in PPSSPP, configure `PSPGO_PPSSPP` and use
+`run`:
+
+```sh
+export PSPGO_PPSSPP=/path/to/PPSSPPSDL
+pspgo run ./example
+```
+
+## Use in your own project
+
+Add `pspsdk-go` to the Go module containing your application:
+
+```sh
+go mod init example.com/my-psp-app
+go get github.com/pspdev-go/pspsdk-go@latest
+```
+
+Point `pspgo` at a checkout of this repository so it can use the PSP startup
+code and ABI bridges:
+
+```sh
+export PSPGO_SDK=/path/to/pspsdk-go
+pspgo doctor
+pspgo build .
+```
+
+The SDK path can also be stored in `pspgo.toml`:
+
+```toml
+title = "My PSP Game"
+output = "my-game"
+sdk_root = "../pspsdk-go"
+build_dir = "build/pspgo"
+kernel_mode = false
+```
+
+The TinyGo PSP target is embedded in `pspgo`; applications do not need to
+provide a `psp.json`.
+
+Minimal application code can import the bindings directly:
+
+```go
+package main
+
+import (
+	"github.com/pspdev-go/pspsdk-go/psp/debugscreen"
+	"github.com/pspdev-go/pspsdk-go/psp/kernel"
+	"github.com/pspdev-go/pspsdk-go/psp/threadman"
+)
+
+func main() {
+	debugscreen.Init()
+	debugscreen.PutString("Hello from Go!")
+	threadman.SceKernelDelayThread(5_000_000)
+	kernel.ExitGame()
+}
+```
+
+See [`example/main.go`](example/main.go) for a complete rotating-cube example.
 
 ## PSPSDK header mappings
 
@@ -29,12 +127,12 @@ The packages call PSPSDK symbols directly. The only remaining C bridge is
 `bridge/main.c`, which defines the PSP module metadata and calls the TinyGo
 entry point.
 
-| Go package | PSPSDK header |
-| --- | --- |
-| `psp/ctrl` | `pspctrl.h` |
-| `psp/debugscreen` | `pspdebug.h` |
-| `psp/display` | `pspdisplay.h` |
-| `psp/kernel` | the currently used API from aggregate header `pspkernel.h` |
+| Go package        | PSPSDK header                                              |
+| ----------------- | ---------------------------------------------------------- |
+| `psp/ctrl`        | `pspctrl.h`                                                |
+| `psp/debugscreen` | `pspdebug.h`                                               |
+| `psp/display`     | `pspdisplay.h`                                             |
+| `psp/kernel`      | the currently used API from aggregate header `pspkernel.h` |
 
 Functions, constants, and structures use Go-friendly names. Constants and
 debug structure types also retain PSPSDK-style aliases where useful when
@@ -59,16 +157,16 @@ below `psp/`. This includes user-mode and kernel/driver `psp*.h` headers as
 well as ARK, CFW, Vita POPS, VLF, and helper-library headers. The `psp` prefix
 is removed from package names; for example:
 
-| Header | Go package |
-| --- | --- |
-| `pspaudio.h` | `psp/audio` |
-| `pspnet_adhoc.h` | `psp/net_adhoc` |
+| Header                  | Go package             |
+| ----------------------- | ---------------------- |
+| `pspaudio.h`            | `psp/audio`            |
+| `pspnet_adhoc.h`        | `psp/net_adhoc`        |
 | `psputility_savedata.h` | `psp/utility_savedata` |
-| `pspctrl_kernel.h` | `psp/ctrl_kernel` |
-| `pspnand_driver.h` | `psp/nand_driver` |
-| `systemctrl_ark.h` | `psp/systemctrl_ark` |
-| `vitapops.h` | `psp/vitapops` |
-| `vlf.h` | `psp/vlf` |
+| `pspctrl_kernel.h`      | `psp/ctrl_kernel`      |
+| `pspnand_driver.h`      | `psp/nand_driver`      |
+| `systemctrl_ark.h`      | `psp/systemctrl_ark`   |
+| `vitapops.h`            | `psp/vitapops`         |
+| `vlf.h`                 | `psp/vlf`              |
 
 The generated bindings expose C functions with an exported first letter and
 retain the rest of the PSPSDK name. For example,
@@ -90,10 +188,11 @@ each header, declaration counts, and unsupported variadic functions.
 Kernel and driver packages add a library-requirement marker so automatic
 resolution selects the kernel/driver archive even when a user-mode archive
 exports an identically named symbol. Importing these packages does not grant
-kernel privileges. Build a kernel-mode module when the API requires it:
+kernel privileges. Build a kernel-mode module when the API requires it by
+setting `kernel_mode = true` in `pspgo.toml`:
 
-```sh
-PSP_KERNEL_MODE=ON ./build-sample.sh
+```toml
+kernel_mode = true
 ```
 
 Kernel/driver APIs can modify firmware state or raw devices and must only be

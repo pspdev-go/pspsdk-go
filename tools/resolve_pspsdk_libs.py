@@ -13,6 +13,16 @@ TOOLCHAIN_SYMBOLS = {
     "memcpy", "memmove", "memset", "printf", "putchar", "puts", "realloc",
     "snprintf", "sprintf", "strcat", "strchr", "strcmp", "strcpy", "strlen",
     "strncmp", "strncpy", "strrchr", "strstr", "vsnprintf",
+    "acosf", "asinf", "atan2f", "atanf", "ceilf", "cosf", "expf", "fabsf",
+    "floorf", "fmodf", "logf", "powf", "sinf", "sqrtf", "tanf",
+}
+
+BRIDGE_REQUIREMENTS = {
+    "psp_debugscreen_kputs": ("pspDebugScreenKprintf",),
+    "psp_kdebug_puts": ("Kprintf",),
+    "pspsdk_go_fdputs": ("fdprintf",),
+    "pspsdk_go_gum_draw_array": ("sceGumDrawArray",),
+    "pspsdk_go_gum_draw_array_3d": ("sceGumDrawArray",),
 }
 
 
@@ -123,6 +133,9 @@ def main():
             if args.verbose:
                 print(f"{symbol} -> {requested.name} (package requirement)")
             continue
+        if symbol in BRIDGE_REQUIREMENTS:
+            pending.extend(BRIDGE_REQUIREMENTS[symbol])
+            continue
         if symbol.startswith("pspsdk_go_"):
             # Project-local bridge or helper symbol, resolved by a CMake target.
             continue
@@ -136,6 +149,9 @@ def main():
         archive, member = choose_definition(symbol, candidates, selected)
         if args.verbose:
             print(f"{symbol} -> {archive.name}:{member}")
+        if archive.name == "libpspuser.a":
+            # The user import stubs are supplied by the PSP GCC link specs.
+            continue
         selected.add(archive)
         key = (archive, member)
         if key in visited_members:

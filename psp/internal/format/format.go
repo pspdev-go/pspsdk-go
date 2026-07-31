@@ -73,7 +73,7 @@ func appendPad(out []byte, pad byte, count int, text *string) []byte {
 		out = append(out, (*text)[0])
 		*text = (*text)[1:]
 	}
-	for i := 0; i < count; i++ {
+	for range count {
 		out = append(out, pad)
 	}
 	return out
