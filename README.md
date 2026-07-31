@@ -22,7 +22,10 @@ PSPSDK library resolution, PSP linking, and `EBOOT.PBP` packaging performed by
 - [pspgo](https://github.com/pspdev-go/pspgo)
 - [TinyGo with PSP support](https://github.com/pspdev-go/tinygo)
 - [PSPSDK](https://github.com/pspdev/pspdev)
-- CMake and Make
+- CMake
+
+`pspgo` uses `cmake --build`; it does not invoke Make directly. CMake can use
+Make, Ninja, or another supported build backend.
 
 Set `PSPDEV` to the PSPSDK installation and make its tools available:
 
