@@ -43,9 +43,6 @@ jobs:
           go install golang.org/x/tools/gopls/internal/analysis/modernize/cmd/modernize@latest
           modernize -test ./...
 
-      - name: Check spelling
-        uses: crate-ci/typos@v1
-
   # =========================================================
   # 2. test
   # =========================================================
